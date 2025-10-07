@@ -55,7 +55,7 @@ const AddRecipe = () => {
 
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:8080/api/recipes", {
+      const response = await fetch("/api/recipes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

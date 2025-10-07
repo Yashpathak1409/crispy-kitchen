@@ -45,7 +45,7 @@ const UpdateRecipe = () => {
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/recipes/${id}`);
+        const response = await fetch(`/api/recipes/${id}`);
         const data = await response.json();
         if (response.ok) {
           setFormData({
@@ -91,7 +91,7 @@ const UpdateRecipe = () => {
       const ingredientsArray = formData.ingredients.split(',').map(i => i.trim());
       const stepsArray = formData.steps.split(',').map(s => s.trim());
 
-      const response = await fetch(`http://localhost:8080/api/recipes/${id}`, {
+      const response = await fetch(`/api/recipes/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

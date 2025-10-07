@@ -9,7 +9,7 @@ const Home = () => {
   // Fetch ratings from backend
   const fetchRatings = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/ratings"); // Your API endpoint
+      const response = await fetch("/api/ratings"); // Your API endpoint
       const data = await response.json();
       setRatings(data);
     } catch (error) {

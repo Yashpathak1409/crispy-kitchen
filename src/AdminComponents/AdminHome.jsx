@@ -38,7 +38,7 @@ const AdminHome = () => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/recipes");
+        const response = await fetch("/api/recipes");
         const data = await response.json();
         if (response.ok) {
           setRecipes(data);
@@ -71,7 +71,7 @@ const AdminHome = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8080/api/recipes/${id}`, {
+      const response = await fetch(`/api/recipes/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
       });

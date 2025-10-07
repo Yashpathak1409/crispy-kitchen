@@ -22,7 +22,7 @@ const AdminDashboard = () => {
 
       try {
         // ---------------- Users ----------------
-        const usersRes = await fetch("http://localhost:8080/api/users", {
+        const usersRes = await fetch("/api/users", {
           headers: { "Authorization": `Bearer ${token}` }
         });
         const usersData = await usersRes.json();
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
         const onlineUsers = usersData.filter(u => u.isOnline).length;
 
         // ---------------- Recipes ----------------
-        const recipesRes = await fetch("http://localhost:8080/api/recipes", {
+        const recipesRes = await fetch("/api/recipes", {
           headers: { "Authorization": `Bearer ${token}` }
         });
         const recipesData = await recipesRes.json();

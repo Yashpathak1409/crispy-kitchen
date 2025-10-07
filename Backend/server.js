@@ -6,7 +6,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 const Recipe = require('./models/Recipe');
-const Rating = require("./Models/Rating"); // import the model
+const Rating = require("./models/Rating"); // import the model
 
 
 const nodemailer = require('nodemailer');

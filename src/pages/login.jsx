@@ -25,7 +25,8 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/login", {
+      // ✅ Use relative path (proxy will handle it in dev)
+      const response = await fetch("/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
