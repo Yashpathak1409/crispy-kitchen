@@ -69,7 +69,7 @@ h1 {
 
 /* ----------------- Recipe Detail ----------------- */
 .recipe-detail {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 30px auto;
   padding: 25px;
   background: #ffffff;
@@ -114,17 +114,22 @@ h1 {
   font-size: 20px;
 }
 
-/* Two-column layout for ingredients and instructions */
+/* ----------------- Recipe Flex & AI Chat Layout ----------------- */
 .recipe-flex {
-  display: flex;
-  gap: 40px;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 400px; /* Left recipe info, right AI chat */
+  gap: 30px;
+  align-items: start;
 }
 
+.recipe-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Ingredients and Instructions */
 .ingredients, .instructions {
-  flex: 1;
-  min-width: 300px;
   background: #f0f8ff;
   padding: 15px 20px;
   border-radius: 12px;
@@ -141,76 +146,110 @@ h1 {
   line-height: 1.6;
 }
 
-/* Paragraph styling */
-.recipe-detail p {
-  margin: 6px 0;
-  color: #555;
-  font-size: 16px;
+/* ----------------- Unified Modern AI Assistant ----------------- */
+.ai-chat-container {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 500px;        /* square-ish box */
+  width: 400px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  transition: transform 0.2s;
 }
 
-/* ----------------- Responsive Styles ----------------- */
-@media (max-width: 1024px) {
-  .recipe-card {
-    width: 200px;
-  }
-
-  .recipe-detail img {
-    max-width: 100%;
-  }
+.ai-chat-container:hover {
+  transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {
-  .recipe-list {
-    gap: 15px;
-  }
-
-  .recipe-card {
-    width: 45%;
-  }
-
-  .recipe-flex {
-    flex-direction: column;
-  }
+/* Chat messages scroll area (all messages inside same box) */
+.ai-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  border-radius: 15px;
+  background: #f5f7fa;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #00bcd4 #e0e0e0;
 }
 
-@media (max-width: 480px) {
-  .recipe-card {
-    width: 90%;
-  }
-
-  h1 {
-    font-size: 28px;
-  }
-
-  .recipe-detail h2 {
-    font-size: 24px;
-  }
-
-  .recipe-detail h3 {
-    font-size: 18px;
-  }
+/* Custom scrollbar for modern look */
+.ai-chat-messages::-webkit-scrollbar {
+  width: 8px;
 }
 
-
-/* Search Bar */
-.search-bar-container {
-  text-align: center;
-  margin-bottom: 20px;
+.ai-chat-messages::-webkit-scrollbar-thumb {
+  background-color: #00bcd4;
+  border-radius: 4px;
 }
 
-.search-bar {
-  width: 80%;
-  max-width: 500px;
+.ai-chat-messages::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+/* Individual chat messages */
+.chat-message {
+  padding: 10px 14px;
+  border-radius: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 80%;
+  word-wrap: break-word;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.chat-message.user {
+  background-color: #00bcd4;
+  color: white;
+  align-self: flex-end;
+}
+
+.chat-message.ai {
+  background-color: #f0f0f0;
+  color: #333;
+  align-self: flex-start;
+}
+
+/* Prompt input area inside same grid */
+.ai-chat-input {
+  display: flex;
+  gap: 10px;
+}
+
+.ai-chat-input input {
+  flex: 1;
   padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid #ccc;
   outline: none;
-  transition: box-shadow 0.3s, border-color 0.3s;
+  font-size: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.search-bar:focus {
+.ai-chat-input input:focus {
   border-color: #00bcd4;
-  box-shadow: 0 0 8px rgba(0, 188, 212, 0.3);
+  box-shadow: 0 0 5px rgba(0,188,212,0.3);
 }
 
+.ai-chat-input button {
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: none;
+  background-color: #00bcd4;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.ai-chat-input button:hover {
+  background-color: #0097a7;
+  transform: translateY(-1px);
+}

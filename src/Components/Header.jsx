@@ -1,77 +1,118 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import logo from '../assets/hand-drawn-hungry-emoji-illustration_23-2151048229.jpg'; // Make sure path & extension are correct
-import './Header.css';
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/hand-drawn-hungry-emoji-illustration_23-2151048229.jpg";
+import "./Header.css";
 
 const Header = () => {
   const [role, setRole] = useState(null);
+  const [userInitial, setUserInitial] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // ✅ Fetch current user using backend API (not token decode)
+  const fetchUserProfile = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setRole(null);
+      setUserInitial(null);
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:8080/api/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.user) {
+        const { name, role } = data.user;
+        setRole(role || null);
+        setUserInitial(name ? name.charAt(0).toUpperCase() : "U");
+      } else {
+        console.warn("Failed to fetch user:", data.message);
+        setRole(null);
+        setUserInitial(null);
+      }
+    } catch (err) {
+      console.error("Error fetching user profile:", err);
+      setRole(null);
+      setUserInitial(null);
+    }
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1])); // decode JWT payload
-        setRole(payload.role);
-      } catch (err) {
-        console.error("Invalid token", err);
-        setRole(null);
-      }
-    }
+    fetchUserProfile();
+
+    // 🔄 Listen for login/logout and refresh avatar
+    const handleLogin = () => fetchUserProfile();
+    const handleLogout = () => {
+      setRole(null);
+      setUserInitial(null);
+    };
+
+    window.addEventListener("login", handleLogin);
+    window.addEventListener("logout", handleLogout);
+
+    return () => {
+      window.removeEventListener("login", handleLogin);
+      window.removeEventListener("logout", handleLogout);
+    };
   }, []);
 
+  const handleLogoutClick = () => {
+    localStorage.removeItem("token");
+    window.dispatchEvent(new Event("logout"));
+    navigate("/login");
+  };
+
   return (
-    <header style={styles.header}>
-      <div style={styles.leftSection}>
-        <img src={logo} alt="Logo" style={styles.logo} />
-        <h1 style={styles.title}>Food Recipe</h1>
+    <header className="app-header">
+      <div className="left-section">
+        <img src={logo} alt="Logo" className="logo" />
+        <h1 className="title">Food Recipe</h1>
       </div>
 
-      <nav>
-        <Link to="/" style={styles.link}>Home</Link>
-        <Link to="/about" style={styles.link}>About</Link>
-        <Link to="/login" style={styles.link}>Login</Link>
-        <Link to="/signup" style={styles.link}>Sign Up</Link>
-        <Link to="/profile" style={styles.link}>My-Profile</Link>
+      {/* Hamburger for mobile */}
+      <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+        <span className={menuOpen ? "bar active" : "bar"}></span>
+        <span className={menuOpen ? "bar active" : "bar"}></span>
+        <span className={menuOpen ? "bar active" : "bar"}></span>
+      </div>
 
-        {role === "admin" && (
+      <nav className={menuOpen ? "nav-links active" : "nav-links"}>
+        <Link to="/Homepage">Home</Link>
+        <Link to="/about">About</Link>
+
+        {role ? (
           <>
-            <Link to="/add-recipe" style={styles.link}>Add Recipe</Link>
-            <Link to="/Admin-Home" style={styles.link}>Admin Dashboard</Link>
+            {/* ✅ Avatar shows correct user initial */}
+            <div
+              className="user-avatar"
+              title="Go to Profile"
+              onClick={() => navigate("/profile")}
+            >
+              {userInitial || "U"}
+            </div>
+
+            {role === "admin" && (
+              <>
+                <Link to="/add-recipe">Add Recipe</Link>
+                <Link to="/Admin-Home">Admin Dashboard</Link>
+              </>
+            )}
+
+            
+          </>
+        ) : (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/signup">Sign Up</Link>
           </>
         )}
       </nav>
     </header>
   );
-};
-
-const styles = {
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "10px 20px",
-    backgroundColor: "#ff7043",
-    color: "#fff",
-  },
-  leftSection: {
-    display: "flex",
-    alignItems: "center"
-  },
-  logo: {
-    height: "50px",
-    width: "50px",
-    marginRight: "10px",
-    borderRadius: "8px",
-  },
-  title: {
-    margin: 0,
-  },
-  link: {
-    marginLeft: "15px",
-    color: "#fff",
-    textDecoration: "none",
-    fontWeight: "bold",
-  },
 };
 
 export default Header;

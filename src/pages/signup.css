@@ -1,133 +1,232 @@
-/* ---------- Container ---------- */
-.signup-container {
-  max-width: 480px;             /* wider */
-  margin: 60px auto;            /* shifted up a little */
-  padding: 50px 40px;           /* more spacious inside */
-  background-color: #fff8f0;
-  border-radius: 18px;
-  box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+/* ---------- Scoped only to signup page ---------- */
+.signup-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f2eff6, #a3b4d2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+/* ---------- Signup Container ---------- */
+.signup-page .signup-container {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  padding: 45px 40px;
+  width: 400px;
   text-align: center;
-  font-family: Arial, sans-serif;
+  color: #fff;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.signup-page .signup-container {
+  animation: fadeInUp 0.8s ease;
 }
 
 /* ---------- Heading ---------- */
-.signup-container h2 {
-  color: #ff7043;
-  font-size: 36px;              /* bigger heading */
+.signup-page .signup-container h2 {
+  font-size: 28px;
   font-weight: 700;
-  margin-bottom: 35px;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
 }
 
 /* ---------- Form ---------- */
-.signup-form input {
-  width: 100%;
-  padding: 16px 18px;           /* bigger inputs */
-  margin-bottom: 22px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-  font-size: 17px;              /* slightly larger text */
-  box-sizing: border-box;
-  transition: all 0.3s ease;
+.signup-page .signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.signup-form input:focus {
-  border-color: #ff7043;
-  box-shadow: 0 0 6px rgba(255,112,67,0.35);
-  outline: none;
-}
-
-/* ---------- Password Field Wrapper ---------- */
-.password-field {
+/* ---------- Input Group ---------- */
+.signup-page .input-group {
+  display: flex;
+  flex-direction: column;
   position: relative;
-  margin-bottom: 22px;
 }
 
-.password-field input {
-  padding-right: 55px;          /* extra room for toggle */
-}
-
-/* ---------- Toggle Password Button ---------- */
-.toggle-btn {
-  position: absolute;
-  top: 50%;
-  right: 14px;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  font-size: 14px;
-  font-weight: 600;
-  color: #ff7043;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
-
-.toggle-btn:hover {
-  background-color: rgba(255,112,67,0.1);
-  color: #ff5722;
-}
-
-.toggle-btn:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-/* ---------- Signup Button ---------- */
-.signup-form button[type="submit"] {
-  width: 100%;
-  margin-top: 15px;
-  padding: 16px 18px;          /* bigger button */
+.signup-page .input-group input {
+  padding: 14px 18px;
   border-radius: 12px;
   border: none;
-  background-color: #ff7043;
-  color: #fff;
-  font-size: 19px;             /* larger text */
-  font-weight: 600;
-  cursor: pointer;
+  outline: none;
+  font-size: 15px;
+  color: #333;
+  background: rgba(255, 255, 255, 0.9);
   transition: all 0.3s ease;
 }
 
-.signup-form button[type="submit"]:hover {
-  background-color: #ff5722;
-  box-shadow: 0 6px 18px rgba(255,87,34,0.4);
+.signup-page .input-group input:focus {
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.25);
 }
 
-/* ---------- Bottom Text/Link ---------- */
-.signup-form p {
-  margin-top: 18px;
-  font-size: 15px;
-  color: #666;
+/* ---------- Show/Hide Password ---------- */
+.signup-page .toggle-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #1f1e20;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
 }
 
-.signup-form a {
-  color: #ff7043;
-  font-weight: 500;
-  text-decoration: none;
-  transition: 0.3s;
+.signup-page .toggle-btn:hover {
+  color: #2575fc;
 }
 
-.signup-form a:hover {
-  color: #ff5722;
-  text-decoration: underline;
+/* ---------- Error Messages ---------- */
+.signup-page .error {
+  font-size: 13px;
+  color: #ff4b5c;
+  margin-top: 5px;
+  text-align: left;
+  padding-left: 5px;
 }
 
-
-.popup-message {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #2b2c2c;
+/* ---------- Submit Button ---------- */
+.signup-page .signup-btn {
+  padding: 14px;
+  background: linear-gradient(135deg, #ff8c00, #ff0080);
   color: white;
-  padding: 12px 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  z-index: 1000;
-  animation: fadeInOut 2.5s forwards;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.signup-page .signup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 0, 128, 0.35);
+}
+
+/* ---------- Bottom login link ---------- */
+.signup-page .login-link {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.signup-page .login-link a {
+  color: #1360f9;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.signup-page .login-link a:hover {
+  text-decoration: underline;
+  color: #ff00f2;
+}
+
+/* ---------- Popup / Bottom Error Message ---------- */
+.signup-page .bottom-error {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 75, 92, 0.9);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  animation: fadeInOut 2.8s ease-in-out;
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(-20px); }
-  10% { opacity: 1; transform: translateY(0); }
-  90% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-20px); }
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+}
+
+/* ---------- RESPONSIVE DESIGN ---------- */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .signup-page .signup-container {
+    width: 90%;
+    padding: 35px 25px;
+  }
+
+  .signup-page .signup-container h2 {
+    font-size: 24px;
+  }
+
+  .signup-page .signup-btn {
+    font-size: 15px;
+    padding: 12px;
+  }
+}
+
+/* Mobile Phones */
+@media (max-width: 480px) {
+  .signup-page .signup-container {
+    width: 100%;
+    padding: 25px 20px;
+    border-radius: 16px;
+  }
+
+  .signup-page .signup-container h2 {
+    font-size: 22px;
+    margin-bottom: 18px;
+  }
+
+  .signup-page .input-group input {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .signup-page .signup-btn {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .signup-page .toggle-btn {
+    font-size: 13px;
+    right: 12px;
+  }
+
+  .signup-page .error {
+    font-size: 12px;
+  }
+
+  .signup-page .bottom-error {
+    font-size: 13px;
+    padding: 6px 12px;
+    bottom: -45px;
+  }
 }

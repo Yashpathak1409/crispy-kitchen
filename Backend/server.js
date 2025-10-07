@@ -6,11 +6,16 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 const Recipe = require('./models/Recipe');
+const Rating = require("./Models/Rating"); // import the model
+
+
 const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey123";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY; // keep your key in .env
+
 
 app.use(express.json());
 app.use(cors());
@@ -286,6 +291,64 @@ app.get('/api/users/me', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
+
+
+
+// POST /api/ratings
+app.post("/api/ratings", async (req, res) => {
+  try {
+    const { userId, rating, comment } = req.body;
+    if (!rating || rating < 1 || rating > 5)
+      return res.status(400).json({ message: "Invalid rating value" });
+
+    const newRating = new Rating({ userId, rating, comment });
+    await newRating.save();
+
+    res.status(201).json({ message: "Rating saved successfully", data: newRating });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// AI chat bot
+app.post("/api/ai-chat", async (req, res) => {
+  const { prompt } = req.body;
+
+  try {
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": GEMINI_API_KEY,
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+        }),
+      }
+    );
+
+    const data = await response.json();
+    console.log("Full Gemini response:", JSON.stringify(data, null, 2));
+
+    let aiText = "No response";
+    if (data?.candidates?.length > 0) {
+      const candidate = data.candidates[0];
+      if (candidate?.content?.parts?.length > 0) {
+        aiText = candidate.content.parts.map(p => p.text).join(" ");
+      }
+    }
+
+    console.log("Gemini AI response text:", aiText);
+    res.json({ text: aiText });
+  } catch (error) {
+    console.error("AI fetch error:", error);
+    res.status(500).json({ error: "Failed to fetch AI response" });
+  }
+});
+
 
 
 // ------------------ Test Route ------------------

@@ -100,11 +100,11 @@ const AdminHome = () => {
       case "Add Recipe":
         navigate("/add-recipe");
         break;
-      case "Review Analysis":
-        alert("Open Review / Analysis Page");
+      case "Analysis":
+        navigate("/analysis"); // Navigate to /analysis route
         break;
       case "Manage Users":
-        alert("Open Manage Users Page");
+        navigate("/manage-users"); // Navigate to Manage Users page
         break;
       case "Other Options":
         alert("Other Options");

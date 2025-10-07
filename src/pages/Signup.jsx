@@ -1,33 +1,61 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import './signup.css';
+import "./signup.css";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [popup, setPopup] = useState(""); // For messages
+  const [popup, setPopup] = useState("");
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  // Show temporary popup
-  const showPopup = (message) => {
-    setPopup(message);
-    setTimeout(() => setPopup(""), 2500); // hide after 2.5s
+  const validateForm = () => {
+    const newErrors = {};
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/;
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required.";
+    } else if (formData.name.length < 3) {
+      newErrors.name = "Name must be at least 3 characters long.";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required.";
+    } else if (!emailPattern.test(formData.email)) {
+      newErrors.email = "Enter a valid email address.";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required.";
+    } else if (!passwordPattern.test(formData.password)) {
+      newErrors.password =
+        "Password must be at least 8 chars, with uppercase, lowercase, number & symbol.";
+    }
+
+    if (formData.confirmPassword !== formData.password) {
+      newErrors.confirmPassword = "Passwords do not match.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (formData.password !== formData.confirmPassword) {
-      showPopup("Passwords do not match!");
+    if (!validateForm()) {
+      setPopup("Please fix the form errors before submitting.");
       return;
     }
 
@@ -38,83 +66,105 @@ const Signup = () => {
         body: JSON.stringify({
           name: formData.name.trim(),
           email: formData.email.trim(),
-          password: formData.password
+          password: formData.password,
         }),
       });
 
       const data = await response.json();
+
       if (response.ok) {
-        showPopup(data.message || "Signup successful!");
-        setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+        setPopup("Signup successful! Redirecting...");
         setTimeout(() => navigate("/login"), 1500);
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
       } else {
-        showPopup(data.message || "Signup failed");
+        setPopup(data.message || "Signup failed. Try again.");
       }
     } catch (error) {
       console.error("Error:", error);
-      showPopup("An error occurred. Please try again.");
+      setPopup("An error occurred. Please try again.");
     }
   };
 
-  const togglePassword = () => setShowPassword(prev => !prev);
+  const togglePassword = () => setShowPassword((prev) => !prev);
 
   return (
-    <div className="signup-container">
-      {popup && <div className="popup-message">{popup}</div>}
+    <div className="signup-page">
+      <div className="signup-container">
+        <h2>Create Account</h2>
 
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit} className="signup-form">
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
+        <form onSubmit={handleSubmit} className="signup-form">
+          <div className="input-group">
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+            {errors.name && <p className="error">{errors.name}</p>}
+          </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
+          <div className="input-group">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            {errors.email && <p className="error">{errors.email}</p>}
+          </div>
 
-        <div className="password-field">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <button type="button" className="toggle-btn" onClick={togglePassword}>
-            {showPassword ? "Hide" : "Show"}
+          <div className="input-group password-group">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <span className="toggle-btn" onClick={togglePassword}>
+              {showPassword ? "Hide" : "Show"}
+            </span>
+            {errors.password && <p className="error">{errors.password}</p>}
+          </div>
+
+          <div className="input-group password-group">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+            <span className="toggle-btn" onClick={togglePassword}>
+              {showPassword ? "Hide" : "Show"}
+            </span>
+            {errors.confirmPassword && (
+              <p className="error">{errors.confirmPassword}</p>
+            )}
+          </div>
+
+          <button type="submit" className="signup-btn">
+            Sign Up
           </button>
-        </div>
 
-        <div className="password-field">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-          />
-          <button type="button" className="toggle-btn" onClick={togglePassword}>
-            {showPassword ? "Hide" : "Show"}
-          </button>
-        </div>
+          <p className="login-link">
+            Already have an account? <a href="/login">Login</a>
+          </p>
 
-        <button type="submit">Sign Up</button>
-        <p>
-          Already have an account? <a href="/login">Login</a>
-        </p>
-      </form>
+          {popup && <p className="bottom-error">{popup}</p>}
+        </form>
+      </div>
     </div>
   );
 };

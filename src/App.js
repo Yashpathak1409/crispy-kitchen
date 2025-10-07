@@ -7,6 +7,8 @@ import About from "./Components/About";
 import AddRecipe from "./Components/AddRecipe";
 
 import Home from "./pages/Home";
+import HomePage from "./pages/Homepage";
+
 import Login from "./pages/login";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
@@ -16,6 +18,7 @@ import Profile from "./pages/profile";
 import AdminHome from "./AdminComponents/AdminHome";
 import UpdateRecipe from "./AdminComponents/UpdateRecipe";
 import Analysis from "./AdminComponents/Analysis";
+import Rate from "./pages/Rate";
 
 import ProtectedRoute from "./Components/ProtectedRoute";
 
@@ -24,13 +27,17 @@ function App() {
     <Router>
       <Header />
 
+      {/* Global Rating Popup */}
+      <Rate delay={5000} />
+
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
-        <Route path="/Signup" element={<Signup />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/about" element={<About />} />
+        <Route path="/Homepage" element={<HomePage />} />
 
         {/* Protected routes */}
         <Route 
@@ -82,7 +89,7 @@ function App() {
           } 
         />
 
-        {/* Fallback route */}
+        {/* Fallback */}
         <Route path="*" element={<h2>Page Not Found</h2>} />
       </Routes>
 
